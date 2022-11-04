@@ -2,6 +2,12 @@
 
 A fully functional implementation of `GeckoView` on android for react native. The component supports two-way messaging similar to react-native-webview.
 
+## Installation
+
+```
+yarn add @ammarahmed/react-native-geckoview
+```
+
 ## Basic Example
 
 ```ts

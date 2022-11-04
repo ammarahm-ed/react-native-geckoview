@@ -1,16 +1,16 @@
 {
-  "name": "react-native-geckoview",
+  "name": "@ammarahmed/react-native-geckoview",
   "title": "React Native GeckoView",
-  "version": "0.0.1",
-  "description": "TODO",
+  "version": "1.0.0",
+  "description": "GeckoView implementation on android for React Native.",
   "main": "./index.tsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sunnylqm/react-native-geckoview.git",
-    "baseUrl": "https://github.com/sunnylqm/react-native-geckoview"
+    "url": "git+https://github.com/ammarahm-ed/react-native-geckoview.git",
+    "baseUrl": "https://github.com/ammarahm-ed/react-native-geckoview"
   },
   "keywords": [
     "react-native",
@@ -18,22 +18,18 @@
     "webview"
   ],
   "author": {
-    "name": "sunnylqm",
-    "email": "sunnylqm@gmail.com"
+    "name": "ammarahm-ed",
+    "email": "ammarahmed6506@gmail.com"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": "^16.9.0",
-    "react-native": ">=0.60"
+    "react": "*",
+    "react-native": "*"
   },
   "devDependencies": {
-    "@tsconfig/react-native": "^2.0.2",
-    "@types/jest": "^26.0.23",
-    "@types/react": "^18.0.25",
-    "@types/react-native": "^0.69.3",
-    "babel-jest": "^26.6.3",
+    "@types/react-native": "0.69.3",
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
     "react": "18.0.0",
