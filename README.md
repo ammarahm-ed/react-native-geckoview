@@ -97,7 +97,7 @@ ref.current?.reload();
 
 ## Messaging
 
-Messaging works through an extension for `GeckoView` which can be found at the root of the project. Copy `extensions/messaging` to your Apps's `android/app/src/main/assets/messaging` folder.
+Messaging works through an extension for `GeckoView` which can be found at the root of the project. Copy contents of `extensions/messaging` to your Apps's `android/app/src/main/assets/messaging` folder.
 
 ## Thanks to
 - [fushixiang](https://github.com/a251115100/geckoview-jsdemo) for GeckoView extension example.

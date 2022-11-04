@@ -7,7 +7,7 @@ import {
   ViewProps,
 } from "react-native";
 
-interface GeckoViewInterface extends ViewProps {
+export interface GeckoViewInterface extends ViewProps {
   source?: { html?: string; uri?: string };
   forceDarkOn?: boolean;
   autoFillEnabled?: boolean;
@@ -26,7 +26,7 @@ interface GeckoViewInterface extends ViewProps {
   injectedJavaScript?: string;
 }
 
-type WebViewCommands = {
+export type WebViewCommands = {
   goBack: () => void;
   goForward: () => void;
   reload: () => void;
