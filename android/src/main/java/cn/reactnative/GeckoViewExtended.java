@@ -1,6 +1,8 @@
 package cn.reactnative;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 import android.view.ContentInfo;
 import android.view.ViewGroup;
@@ -30,6 +32,12 @@ import org.mozilla.geckoview.WebRequestError;
 
 import com.facebook.react.views.scroll.ScrollEventType;
 import com.google.gson.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class GeckoViewExtended extends GeckoView implements WebExtension.MessageDelegate, GeckoSession.PromptDelegate, GeckoSession.NavigationDelegate, GeckoSession.ProgressDelegate, WebExtension.PortDelegate, GeckoSession.ScrollDelegate, GeckoSession.ContentDelegate, ContentBlocking.Delegate {
     private ReactContext reactContext;
@@ -122,22 +130,87 @@ public class GeckoViewExtended extends GeckoView implements WebExtension.Message
     }
 
     public void setSource(ReadableMap source) {
-        GeckoSession session = this.getSession();
-        if (source != null) {
-            if (source.hasKey("html")) {
-                String html = source.getString("html");
-                GeckoSession.Loader loader = new GeckoSession.Loader();
-                loader.data(html, "text/html");
-                session.load(loader);
-                return;
+        try {
+            GeckoSession session = this.getSession();
+            if (source != null) {
+                if (source.hasKey("html")) {
+                    String html = source.getString("html");
+                    GeckoSession.Loader loader = new GeckoSession.Loader();
+                    loader.data(html, "text/html");
+                    session.load(loader);
+                    return;
+                }
+                if (source.hasKey("uri")) {
+                    String url = source.getString("uri");
+                    if (url.startsWith("file:///android_asset")) {
+                        String outputPath = reactContext.getCacheDir().getAbsolutePath() + File.separator + "android_asset";
+                        boolean exists = new File(outputPath).exists();
+                        if (exists) {
+                            String newPath = url.replace("file:///android_asset", outputPath);
+                            session.loadUri(newPath);
+                        } else {
+                            new File(outputPath).mkdir();
+                            doCopy("",outputPath);
+                            String newPath = url.replace("file:///android_asset", outputPath);
+                            session.loadUri(newPath);
+                        }
+                    } else {
+                        session.loadUri(url);
+                    }
+                    return;
+                }
             }
-            if (source.hasKey("uri")) {
-                String url = source.getString("uri");
-                session.loadUri(url);
-                return;
-            }
+            session.loadUri("about:blank");
+        } catch (Exception e) {
+
         }
-        session.loadUri("about:blank");
+    }
+
+    private void doCopy(String dirName, String outPath) throws IOException {
+        AssetManager assets = reactContext.getAssets();
+        String[] srcFiles = assets.list(dirName);//for directory
+        for (String srcFileName : srcFiles) {
+            String outFileName = outPath + File.separator + srcFileName;
+            String inFileName = dirName + File.separator + srcFileName;
+            if (dirName.equals("")) {// for first time
+                inFileName = srcFileName;
+            }
+            try {
+                InputStream inputStream = assets.open(inFileName);
+                copyAndClose(inputStream, new FileOutputStream(outFileName));
+            } catch (IOException e) {//if directory fails exception
+                Log.e("GeckoViewExtended",e.getMessage());
+                new File(outFileName).mkdir();
+                doCopy(inFileName, outFileName);
+            }
+
+        }
+    }
+
+    public static void closeQuietly(AutoCloseable autoCloseable) {
+        try {
+            if(autoCloseable != null) {
+                autoCloseable.close();
+            }
+        } catch(IOException ioe) {
+            //skip
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void copyAndClose(InputStream input, OutputStream output) throws IOException {
+        copy(input, output);
+        closeQuietly(input);
+        closeQuietly(output);
+    }
+
+    public static void copy(InputStream input, OutputStream output) throws IOException {
+        byte[] buffer = new byte[1024];
+        int n = 0;
+        while(-1 != (n = input.read(buffer))) {
+            output.write(buffer, 0, n);
+        }
     }
 
     @Override
