@@ -3,6 +3,7 @@ package cn.reactnative;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.ContentInfo;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import org.mozilla.geckoview.GeckoRuntime;
 import org.mozilla.geckoview.GeckoSession;
 import org.mozilla.geckoview.GeckoView;
 import org.mozilla.geckoview.WebExtension;
+import org.mozilla.geckoview.WebExtensionController;
 import org.mozilla.geckoview.WebRequestError;
 
 import com.facebook.react.views.scroll.ScrollEventType;
@@ -57,6 +59,7 @@ public class GeckoViewExtended extends GeckoView implements WebExtension.Message
         this.setLayoutParams(
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
+        this.setBackgroundColor(Color.TRANSPARENT);
         connectMessagingPort(null);
         session.setNavigationDelegate(this);
         session.setProgressDelegate(this);
@@ -78,6 +81,7 @@ public class GeckoViewExtended extends GeckoView implements WebExtension.Message
         if (mExtension != null) {
             mMessageToSendOnConnect = object;
             mExtension.setMessageDelegate(view,"browser");
+            rt.getWebExtensionController().update(mExtension);
             return;
         }
         rt.getWebExtensionController()
@@ -91,6 +95,8 @@ public class GeckoViewExtended extends GeckoView implements WebExtension.Message
                                 public void run() {
                                     if (extension != null) {
                                         mExtension = extension;
+                                        rt.getWebExtensionController().disable(extension, WebExtensionController.EnableSource.APP);
+                                        rt.getWebExtensionController().enable(extension,WebExtensionController.EnableSource.APP);
                                         extension.setMessageDelegate(view, "browser");
                                         Log.i("MessageDelegate", "Message Delegate Installed");
                                     }
