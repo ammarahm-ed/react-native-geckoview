@@ -18,16 +18,9 @@ window.wrappedJSObject.ReactNativeWebView = cloneInto(
 );
 
 browser.runtime.onMessage.addListener((data, sender) => {
-  console.log('event recieved');
-  console.log('content:eval:' + data);
-  browser.runtime.sendMessage({
-    action: 'ReactNativeWebView',
-    data: 'hello world',
-  });
   if (data.inject) {
     try {
-      let result = window.eval(data.data);
-      console.log('content:eval:result' + result);
+      window.eval(data.inject);
     } catch (e) {
       return Promise.resolve();
     }
